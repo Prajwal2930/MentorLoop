@@ -12,7 +12,11 @@ const errorHandler = (error, _req, res, _next) => {
 
   if (error.code === 11000) {
     statusCode = 409;
-    message = 'An account with this email already exists.';
+    message = error.keyPattern?.email
+      ? 'An account with this email already exists.'
+      : error.keyPattern?.skillName
+        ? 'This skill has already been added to your profile.'
+        : 'A record with this value already exists.';
   }
 
   if (error.name === 'ValidationError') {

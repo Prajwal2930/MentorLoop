@@ -29,6 +29,24 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: null,
     },
+    bio: {
+      type: String,
+      trim: true,
+      maxlength: [500, 'Bio cannot exceed 500 characters.'],
+      default: '',
+    },
+    college: {
+      type: String,
+      trim: true,
+      maxlength: [150, 'College name cannot exceed 150 characters.'],
+      default: '',
+    },
+    graduationYear: {
+      type: Number,
+      min: [1900, 'Graduation year must be 1900 or later.'],
+      max: [2100, 'Graduation year cannot exceed 2100.'],
+      default: null,
+    },
     targetRole: {
       type: String,
       required: [true, 'Target role is required.'],
@@ -43,11 +61,33 @@ const userSchema = new mongoose.Schema(
         message: 'Experience level must be beginner, intermediate, or advanced.',
       },
     },
+    preferredLearningStyle: {
+      type: String,
+      enum: {
+        values: ['visual', 'reading-writing', 'hands-on', 'mixed'],
+        message: 'Preferred learning style is invalid.',
+      },
+      default: null,
+    },
+    dailyLearningGoal: {
+      type: Number,
+      min: [15, 'Daily learning goal must be at least 15 minutes.'],
+      max: [480, 'Daily learning goal cannot exceed 480 minutes.'],
+      default: null,
+    },
     githubUsername: {
       type: String,
       trim: true,
       lowercase: true,
       default: null,
+    },
+    githubConnected: {
+      type: Boolean,
+      default: false,
+    },
+    profileCompleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {

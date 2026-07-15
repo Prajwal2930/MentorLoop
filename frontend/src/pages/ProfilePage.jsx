@@ -1,49 +1,18 @@
-import useAuth from '../hooks/useAuth';
+import { useEffect, useState } from 'react';
+import Input from '../components/Input';
+import LoadingSpinner from '../components/LoadingSpinner';
+import PrimaryButton from '../components/PrimaryButton';
+import SectionCard from '../components/SectionCard';
+import { connectGithub } from '../services/githubService';
+import { getProfile, updateProfile } from '../services/profileService';
 
 const ProfilePage = () => {
-  const { user } = useAuth();
-  const initials = user?.fullName
-    ?.split(' ')
-    .map((name) => name[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
-
-  return (
-    <div className="mx-auto max-w-3xl">
-      <div className="mb-8">
-        <p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Account</p>
-        <h1 className="mt-1 text-3xl font-bold tracking-tight">My profile</h1>
-        <p className="mt-2 text-slate-600 dark:text-slate-300">Your MentorLoop account details.</p>
-      </div>
-
-      <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-        <div className="h-28 bg-gradient-to-r from-indigo-600 to-violet-600" />
-        <div className="px-6 pb-6">
-          <div className="-mt-12 flex h-24 w-24 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-indigo-100 text-2xl font-bold text-indigo-700 dark:border-slate-900 dark:bg-indigo-500/20 dark:text-indigo-300">
-            {user?.avatar ? <img src={user.avatar} alt={user.fullName} className="h-full w-full object-cover" /> : initials}
-          </div>
-          <h2 className="mt-4 text-2xl font-bold">{user?.fullName}</h2>
-          <p className="mt-1 text-slate-600 dark:text-slate-300">{user?.email}</p>
-        </div>
-
-        <dl className="grid border-t border-slate-200 sm:grid-cols-2 dark:border-slate-800">
-          <div className="border-b border-slate-200 px-6 py-5 sm:border-b-0 sm:border-r dark:border-slate-800">
-            <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">Target role</dt>
-            <dd className="mt-1 font-semibold">{user?.targetRole}</dd>
-          </div>
-          <div className="px-6 py-5">
-            <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">Experience level</dt>
-            <dd className="mt-1 capitalize font-semibold">{user?.experienceLevel}</dd>
-          </div>
-          <div className="border-t border-slate-200 px-6 py-5 sm:col-span-2 dark:border-slate-800">
-            <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">GitHub username</dt>
-            <dd className="mt-1 font-semibold">{user?.githubUsername ? `@${user.githubUsername}` : 'Not added yet'}</dd>
-          </div>
-        </dl>
-      </section>
-    </div>
-  );
+  const [profile, setProfile] = useState(null); const [message, setMessage] = useState(''); const [error, setError] = useState('');
+  useEffect(() => { getProfile().then(({ user }) => setProfile(user)).catch((e) => setError(e.response?.data?.message || 'Unable to load profile.')); }, []);
+  if (!profile) return error ? <p className="text-red-600">{error}</p> : <LoadingSpinner />;
+  const change = (event) => setProfile({ ...profile, [event.target.name]: event.target.value });
+  const save = async (event) => { event.preventDefault(); setError(''); try { const profileData = { fullName: profile.fullName, bio: profile.bio, college: profile.college, graduationYear: Number(profile.graduationYear), targetRole: profile.targetRole, experienceLevel: profile.experienceLevel }; if (profile.preferredLearningStyle) profileData.preferredLearningStyle = profile.preferredLearningStyle; if (profile.dailyLearningGoal) profileData.dailyLearningGoal = Number(profile.dailyLearningGoal); const { user } = await updateProfile(profileData); setProfile(user); setMessage('Profile saved.'); } catch (e) { setError(e.response?.data?.message || 'Unable to save profile.'); } };
+  const github = async () => { try { const data = await connectGithub(profile.githubUsername); setProfile({ ...profile, ...data }); setMessage('GitHub connected.'); } catch (e) { setError(e.response?.data?.message || 'Unable to connect GitHub.'); } };
+  return <div className="mx-auto max-w-3xl"><h1 className="text-3xl font-bold">My profile</h1><p className="mt-2 text-slate-500">Manage your learning profile and GitHub account.</p><SectionCard className="mt-6"><form className="space-y-4" onSubmit={save}>{error && <p className="text-sm text-red-600">{error}</p>}{message && <p className="text-sm text-emerald-600">{message}</p>}<Input id="fullName" name="fullName" label="Full name" value={profile.fullName || ''} onChange={change} required /><Input id="bio" name="bio" label="Bio" value={profile.bio || ''} onChange={change} required /><Input id="college" name="college" label="College" value={profile.college || ''} onChange={change} required /><Input id="graduationYear" name="graduationYear" type="number" label="Graduation year" value={profile.graduationYear || ''} onChange={change} required /><Input id="targetRole" name="targetRole" label="Target role" value={profile.targetRole || ''} onChange={change} required /><PrimaryButton type="submit">Save profile</PrimaryButton></form></SectionCard><SectionCard className="mt-6"><h2 className="text-lg font-bold">GitHub account</h2><div className="mt-4 flex gap-3"><Input id="githubUsername" name="githubUsername" label="GitHub username" value={profile.githubUsername || ''} onChange={change} /><PrimaryButton onClick={github}>{profile.githubConnected ? 'Reconnect' : 'Connect GitHub'}</PrimaryButton></div></SectionCard></div>;
 };
-
 export default ProfilePage;
