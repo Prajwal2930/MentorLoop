@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import ProtectedRoute from '../components/ProtectedRoute';
 import DashboardLayout from '../layouts/DashboardLayout';
+import AnalyzeCodePage from '../pages/AnalyzeCodePage';
 import DashboardPage from '../pages/DashboardPage';
 import LandingPage from '../pages/LandingPage';
 import LoginPage from '../pages/LoginPage';
@@ -18,6 +19,7 @@ const AppRoutes = () => (
     <Route path="/register" element={<RegisterPage />} />
     <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
       <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/analyze-code" element={<AnalyzeCodePage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/profile" element={<ProfilePage />} />
       <Route path="/skills" element={<SkillsPage />} />
