@@ -39,4 +39,22 @@ Repository context:
 ${JSON.stringify(repositorySummary)}
 `;
 
-module.exports = { buildCodeAnalysisPrompt, reviewProjectPrompt };
+/** Build a personalized but bounded learning-roadmap prompt. */
+const roadmapPrompt = (learnerContext) => `
+You are an expert developer mentor creating a practical personalized learning roadmap.
+Use only the learner context below. Build an achievable plan aligned to their target role, current skills, daily learning goal, learning style, GitHub feedback, and recent code-analysis patterns.
+Return ONLY valid JSON, without Markdown or code fences, using this exact schema:
+{
+  "title": "",
+  "estimatedDuration": "",
+  "careerGoal": "",
+  "weeks": [
+    { "weekNumber": 1, "title": "", "topics": [""], "miniProjects": [""], "resources": [""] }
+  ]
+}
+Create 4 to 12 sequential weeks. Resources must be concise names or official URLs; do not invent certifications. Include every key.
+Learner context:
+${JSON.stringify(learnerContext)}
+`;
+
+module.exports = { buildCodeAnalysisPrompt, reviewProjectPrompt, roadmapPrompt };

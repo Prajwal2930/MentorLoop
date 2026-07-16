@@ -1,6 +1,6 @@
 const AppError = require('../../utils/AppError');
 const { generateStructuredContent } = require('./gemini.provider');
-const { buildCodeAnalysisPrompt, reviewProjectPrompt } = require('./prompt.service');
+const { buildCodeAnalysisPrompt, reviewProjectPrompt, roadmapPrompt } = require('./prompt.service');
 
 const requiredFields = ['summary', 'errors', 'bestPractices', 'concepts', 'interviewQuestions', 'practiceTask'];
 
@@ -40,4 +40,19 @@ const reviewProject = async (repositorySummary) => {
   return review;
 };
 
-module.exports = { analyzeCode, reviewProject };
+const generateRoadmap = async (learnerContext) => {
+  const roadmap = await generateStructuredContent(roadmapPrompt(learnerContext));
+
+  const validWeeks = Array.isArray(roadmap?.weeks) && roadmap.weeks.length >= 4 && roadmap.weeks.length <= 12
+    && roadmap.weeks.every((week) => Number.isInteger(week.weekNumber) && typeof week.title === 'string'
+      && Array.isArray(week.topics) && Array.isArray(week.miniProjects) && Array.isArray(week.resources));
+
+  if (!roadmap || typeof roadmap.title !== 'string' || typeof roadmap.estimatedDuration !== 'string'
+    || typeof roadmap.careerGoal !== 'string' || !validWeeks) {
+    throw new AppError('The AI provider returned an incomplete learning roadmap.', 502);
+  }
+
+  return roadmap;
+};
+
+module.exports = { analyzeCode, reviewProject, generateRoadmap };

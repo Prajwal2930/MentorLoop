@@ -10,6 +10,8 @@ import LoginPage from '../pages/LoginPage';
 import NotFoundPage from '../pages/NotFoundPage';
 import OnboardingPage from '../pages/OnboardingPage';
 import ProfilePage from '../pages/ProfilePage';
+import RoadmapDetailsPage from '../pages/RoadmapDetailsPage';
+import RoadmapPage from '../pages/RoadmapPage';
 import RegisterPage from '../pages/RegisterPage';
 import SkillsPage from '../pages/SkillsPage';
 
@@ -24,6 +26,8 @@ const AppRoutes = () => (
       <Route path="/analyze-code" element={<AnalyzeCodePage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/roadmap" element={<RoadmapPage />} />
+      <Route path="/roadmap/:id" element={<RoadmapDetailsPage />} />
       <Route path="/skills" element={<SkillsPage />} />
     </Route>
     <Route path="*" element={<NotFoundPage />} />

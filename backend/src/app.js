@@ -9,6 +9,7 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const githubRoutes = require('./routes/githubRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const projectReviewRoutes = require('./routes/projectReviewRoutes');
+const roadmapRoutes = require('./routes/roadmapRoutes');
 const skillRoutes = require('./routes/skillRoutes');
 const userRoutes = require('./routes/userRoutes');
 
@@ -29,6 +30,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/roadmap', roadmapRoutes);
 app.use('/api/github', githubRoutes);
 app.use('/api/github', projectReviewRoutes);
 
