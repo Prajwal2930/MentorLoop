@@ -1,6 +1,6 @@
 const AppError = require('../../utils/AppError');
 const { generateStructuredContent } = require('./gemini.provider');
-const { buildCodeAnalysisPrompt } = require('./prompt.service');
+const { buildCodeAnalysisPrompt, reviewProjectPrompt } = require('./prompt.service');
 
 const requiredFields = ['summary', 'errors', 'bestPractices', 'concepts', 'interviewQuestions', 'practiceTask'];
 
@@ -28,4 +28,16 @@ const analyzeCode = async ({ language, code }) => {
   return validateAnalysis(analysis);
 };
 
-module.exports = { analyzeCode };
+const reviewProject = async (repositorySummary) => {
+  const review = await generateStructuredContent(reviewProjectPrompt(repositorySummary));
+
+  if (!review || typeof review !== 'object' || !Number.isInteger(review.score) || review.score < 0 || review.score > 100
+    || !Array.isArray(review.strengths) || !Array.isArray(review.weaknesses) || typeof review.resumeValue !== 'string'
+    || !Array.isArray(review.interviewQuestions) || !Array.isArray(review.improvements)) {
+    throw new AppError('The AI provider returned an incomplete project review.', 502);
+  }
+
+  return review;
+};
+
+module.exports = { analyzeCode, reviewProject };

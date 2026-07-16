@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 const navigationItems = [
   { label: 'Dashboard', path: '/dashboard', icon: '⌂' },
   { label: 'Analyze Code', path: '/analyze-code', icon: '⌁' },
+  { label: 'GitHub Review', path: '/github-review', icon: '★' },
   { label: 'Onboarding', path: '/onboarding', icon: '✓' },
   { label: 'My Profile', path: '/profile', icon: '◉' },
   { label: 'My Skills', path: '/skills', icon: '⌘' },

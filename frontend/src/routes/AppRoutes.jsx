@@ -4,6 +4,7 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import DashboardLayout from '../layouts/DashboardLayout';
 import AnalyzeCodePage from '../pages/AnalyzeCodePage';
 import DashboardPage from '../pages/DashboardPage';
+import GitHubReviewPage from '../pages/GitHubReviewPage';
 import LandingPage from '../pages/LandingPage';
 import LoginPage from '../pages/LoginPage';
 import NotFoundPage from '../pages/NotFoundPage';
@@ -19,6 +20,7 @@ const AppRoutes = () => (
     <Route path="/register" element={<RegisterPage />} />
     <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
       <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/github-review" element={<GitHubReviewPage />} />
       <Route path="/analyze-code" element={<AnalyzeCodePage />} />
       <Route path="/onboarding" element={<OnboardingPage />} />
       <Route path="/profile" element={<ProfilePage />} />
