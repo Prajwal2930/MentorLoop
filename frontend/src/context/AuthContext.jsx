@@ -1,4 +1,5 @@
 import { createContext, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import { getCurrentUser, loginUser, registerUser } from '../services/authService';
 
@@ -62,6 +63,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const authData = await registerUser(userData);
       saveSession(authData);
+      toast.success('Account created', { description: 'Your MentorLoop workspace is ready.' });
       return authData.user;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Unable to create your account.');
@@ -72,6 +74,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const authData = await loginUser(credentials);
       saveSession(authData);
+      toast.success('Welcome back', { description: 'You are signed in successfully.' });
       return authData.user;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Unable to sign in. Please try again.');
@@ -86,7 +89,10 @@ export const AuthProvider = ({ children }) => {
       isAuthenticated: Boolean(token && user),
       register,
       login,
-      logout: clearSession,
+      logout: () => {
+        clearSession();
+        toast.success('Signed out successfully');
+      },
     }),
     [token, user, isLoading]
   );

@@ -1,6 +1,6 @@
 const AppError = require('../../utils/AppError');
 const { generateStructuredContent } = require('./gemini.provider');
-const { buildCodeAnalysisPrompt, reviewProjectPrompt, roadmapPrompt } = require('./prompt.service');
+const { buildCodeAnalysisPrompt, reviewProjectPrompt, roadmapPrompt, interviewQuestionsPrompt, interviewEvaluationPrompt } = require('./prompt.service');
 
 const requiredFields = ['summary', 'errors', 'bestPractices', 'concepts', 'interviewQuestions', 'practiceTask'];
 
@@ -55,4 +55,24 @@ const generateRoadmap = async (learnerContext) => {
   return roadmap;
 };
 
-module.exports = { analyzeCode, reviewProject, generateRoadmap };
+const generateInterviewQuestions = async ({ interviewType, learnerContext }) => {
+  const result = await generateStructuredContent(interviewQuestionsPrompt({ interviewType, learnerContext }));
+  if (!Array.isArray(result?.questions) || result.questions.length !== 6
+    || !result.questions.every((item) => typeof item.question === 'string' && typeof item.category === 'string')) {
+    throw new AppError('The AI provider returned invalid interview questions.', 502);
+  }
+  return result.questions;
+};
+
+const evaluateInterview = async ({ interviewType, targetRole, questions, answers }) => {
+  const feedback = await generateStructuredContent(interviewEvaluationPrompt({ interviewType, targetRole, questions, answers }));
+  const scoreFields = ['overallScore', 'communicationScore', 'technicalScore', 'confidenceScore'];
+  const listFields = ['strengths', 'weaknesses', 'missingPoints', 'followUpQuestions', 'improvementSuggestions'];
+  if (!feedback || !scoreFields.every((field) => Number.isInteger(feedback[field]) && feedback[field] >= 0 && feedback[field] <= 100)
+    || !listFields.every((field) => Array.isArray(feedback[field]))) {
+    throw new AppError('The AI provider returned incomplete interview feedback.', 502);
+  }
+  return feedback;
+};
+
+module.exports = { analyzeCode, reviewProject, generateRoadmap, generateInterviewQuestions, evaluateInterview };

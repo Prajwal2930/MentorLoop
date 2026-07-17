@@ -1,16 +1,18 @@
+import { motion } from 'framer-motion';
+
 const Input = ({ id, label, error, className = '', ...props }) => (
-  <div className="space-y-1.5">
+  <motion.div animate={error ? { x: [0, -4, 4, -3, 0] } : { x: 0 }} transition={{ duration: 0.28 }} className="space-y-2">
     {label && (
-      <label htmlFor={id} className="block text-sm font-medium text-slate-700 dark:text-slate-200">
+      <label htmlFor={id} className="block text-sm font-semibold text-slate-700 dark:text-slate-200">
         {label}
       </label>
     )}
     <input
       id={id}
-      className={`block w-full rounded-lg border bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-500 ${
+      className={`block w-full rounded-xl border bg-white px-3.5 py-3 text-sm text-slate-900 shadow-sm outline-none transition-all placeholder:text-slate-400 focus:ring-4 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 ${
         error
-          ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500'
-          : 'border-slate-300 focus:border-indigo-500 focus:ring-indigo-500/20 dark:border-slate-700 dark:focus:border-indigo-400'
+          ? 'border-red-400 focus:border-red-500 focus:ring-red-500/15 dark:border-red-500'
+          : 'border-slate-300 focus:border-indigo-500 focus:ring-indigo-500/15 dark:border-slate-700 dark:focus:border-indigo-400'
       } ${className}`}
       aria-invalid={Boolean(error)}
       aria-describedby={error ? `${id}-error` : undefined}
@@ -21,7 +23,7 @@ const Input = ({ id, label, error, className = '', ...props }) => (
         {error}
       </p>
     )}
-  </div>
+  </motion.div>
 );
 
 export default Input;

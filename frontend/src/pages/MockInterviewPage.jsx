@@ -1,0 +1,16 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AnalysisLoading from '../components/AnalysisLoading';
+import PrimaryButton from '../components/PrimaryButton';
+import SectionCard from '../components/SectionCard';
+import { evaluateInterview, startInterview } from '../services/interviewService';
+import { celebrate } from '../utils/celebrate';
+
+const MockInterviewPage = () => {
+  const navigate = useNavigate(); const [type, setType] = useState('Technical'); const [session, setSession] = useState(null); const [answers, setAnswers] = useState({}); const [loading, setLoading] = useState(false); const [error, setError] = useState('');
+  const begin = async () => { setLoading(true); setError(''); try { const { interview } = await startInterview(type); setSession(interview); } catch (e) { setError(e.response?.data?.message || 'Unable to start interview.'); } finally { setLoading(false); } };
+  const submit = async () => { if (Object.values(answers).some((answer) => !answer.trim()) || Object.keys(answers).length !== session.questions.length) return setError('Answer every question before submitting.'); setLoading(true); setError(''); try { const payload = session.questions.map((question) => ({ questionId: question._id, answer: answers[question._id] })); const { interview } = await evaluateInterview(session._id, payload); celebrate(); navigate(`/interview/results/${interview._id}`); } catch (e) { setError(e.response?.data?.message || 'Unable to evaluate interview.'); } finally { setLoading(false); } };
+  return <div className="mx-auto max-w-4xl space-y-6"><div><p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">AI Mock Interview</p><h1 className="mt-1 text-3xl font-bold">Practice the conversation before it counts.</h1></div>{error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-500/10 dark:text-red-300">{error}</p>}{loading && <AnalysisLoading />}{!session && !loading && <SectionCard><h2 className="text-lg font-bold">Choose interview type</h2><div className="mt-4 grid gap-3 sm:grid-cols-3">{['HR', 'Technical', 'Mixed'].map((item) => <button key={item} type="button" onClick={() => setType(item)} className={`rounded-lg border p-4 text-left font-semibold ${type === item ? 'border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-300' : 'border-slate-200 dark:border-slate-700'}`}>{item}</button>)}</div><PrimaryButton className="mt-6" onClick={begin}>Generate questions</PrimaryButton></SectionCard>}{session && !loading && <div className="space-y-4">{session.questions.map((question, index) => <SectionCard key={question._id}><p className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">Question {index + 1} · {question.category}</p><h2 className="mt-2 font-bold">{question.question}</h2><textarea value={answers[question._id] || ''} onChange={(event) => setAnswers({ ...answers, [question._id]: event.target.value })} rows="5" className="mt-4 w-full rounded-lg border border-slate-300 bg-white p-3 text-sm dark:border-slate-700 dark:bg-slate-950" placeholder="Write your answer..." /></SectionCard>)}<PrimaryButton onClick={submit}>Submit for AI evaluation</PrimaryButton></div>}</div>;
+};
+
+export default MockInterviewPage;

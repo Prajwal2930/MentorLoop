@@ -1,0 +1,3 @@
+const SimpleBarChart = ({ data = [], labelKey, valueKey, suffix = '%' }) => <div className="space-y-3">{data.length ? data.map((item, index) => <div key={`${item[labelKey]}-${index}`}><div className="mb-1 flex justify-between gap-3 text-sm"><span className="truncate">{item[labelKey]}</span><span className="font-semibold">{item[valueKey]}{suffix}</span></div><div className="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800"><div className="h-full rounded-full bg-indigo-600" style={{ width: `${Math.min(item[valueKey], 100)}%` }} /></div></div>) : <p className="text-sm text-slate-500">No data yet.</p>}</div>;
+
+export default SimpleBarChart;

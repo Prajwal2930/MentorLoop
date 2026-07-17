@@ -57,4 +57,32 @@ Learner context:
 ${JSON.stringify(learnerContext)}
 `;
 
-module.exports = { buildCodeAnalysisPrompt, reviewProjectPrompt, roadmapPrompt };
+const interviewQuestionsPrompt = ({ interviewType, learnerContext }) => `
+You are a senior interviewer preparing a realistic ${interviewType} interview.
+Use only this candidate context. Ask exactly 6 questions appropriate for their target role, experience, skills, recent mistakes, and portfolio feedback.
+Return ONLY valid JSON without Markdown or code fences:
+{ "questions": [{ "question": "", "category": "" }] }
+Candidate context:
+${JSON.stringify(learnerContext)}
+`;
+
+const interviewEvaluationPrompt = ({ interviewType, targetRole, questions, answers }) => `
+You are a strict but constructive interviewer evaluating a ${interviewType} interview for a ${targetRole} candidate.
+Use only the questions and answers below. Return ONLY valid JSON without Markdown or code fences:
+{
+  "overallScore": 0,
+  "communicationScore": 0,
+  "technicalScore": 0,
+  "confidenceScore": 0,
+  "strengths": [{ "title": "", "explanation": "" }],
+  "weaknesses": [{ "title": "", "explanation": "" }],
+  "missingPoints": [{ "title": "", "explanation": "" }],
+  "followUpQuestions": [{ "question": "", "answer": "" }],
+  "improvementSuggestions": [{ "title": "", "explanation": "" }]
+}
+All scores must be integers from 0 to 100. Include every key.
+Questions: ${JSON.stringify(questions)}
+Answers: ${JSON.stringify(answers)}
+`;
+
+module.exports = { buildCodeAnalysisPrompt, reviewProjectPrompt, roadmapPrompt, interviewQuestionsPrompt, interviewEvaluationPrompt };
