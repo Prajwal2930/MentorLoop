@@ -5,10 +5,20 @@
 @layer base {
   :root {
     color-scheme: light;
+    --canvas: #f7f7f5;
+    --ink: #111827;
+    --panel: rgba(255, 255, 255, 0.82);
+    --line: rgba(148, 163, 184, 0.22);
+    --accent: #5b5ce2;
   }
 
   .dark {
     color-scheme: dark;
+    --canvas: #0b0c10;
+    --ink: #f8fafc;
+    --panel: rgba(20, 22, 30, 0.82);
+    --line: rgba(148, 163, 184, 0.16);
+    --accent: #8b8cff;
   }
 
   html {
@@ -17,8 +27,11 @@
   }
 
   body {
-    @apply m-0 min-w-[320px] bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-white;
-    background-image: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.08), transparent 42%);
+    @apply m-0 min-w-[320px] bg-slate-50 text-slate-900 antialiased transition-colors duration-300 dark:bg-slate-950 dark:text-white;
+    background-color: var(--canvas);
+    background-image:
+      radial-gradient(ellipse 70% 38% at 50% -12%, rgba(99, 102, 241, 0.11), transparent 72%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 28%);
   }
 
   button,
@@ -26,6 +39,18 @@
   select,
   textarea {
     font: inherit;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-indigo-500 ring-offset-2 ring-offset-slate-50 dark:ring-indigo-400 dark:ring-offset-slate-950;
   }
 
   ::selection {
@@ -41,6 +66,18 @@
   .surface-grid {
     background-image: linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
     background-size: 32px 32px;
+  }
+
+  .app-surface {
+    @apply border border-slate-200/80 bg-white/85 shadow-[0_10px_40px_-24px_rgba(15,23,42,0.28)] backdrop-blur-xl dark:border-slate-800/90 dark:bg-slate-900/80 dark:shadow-black/30;
+  }
+
+  .quiet-label {
+    @apply text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400;
+  }
+
+  .interactive-lift {
+    @apply transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-20px_rgba(15,23,42,0.34)] dark:hover:shadow-black/35;
   }
 }
 

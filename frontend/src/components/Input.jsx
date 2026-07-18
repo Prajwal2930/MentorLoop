@@ -9,7 +9,7 @@ const Input = ({ id, label, error, className = '', ...props }) => (
     )}
     <input
       id={id}
-      className={`block w-full rounded-xl border bg-white px-3.5 py-3 text-sm text-slate-900 shadow-sm outline-none transition-all placeholder:text-slate-400 focus:ring-4 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 ${
+      className={`block w-full rounded-xl border bg-white/90 px-3.5 py-3 text-sm text-slate-900 shadow-[0_1px_2px_rgba(15,23,42,0.03)] outline-none transition-all placeholder:text-slate-400 hover:border-slate-400 focus:ring-4 dark:bg-slate-950/80 dark:text-white dark:placeholder:text-slate-500 dark:hover:border-slate-600 ${
         error
           ? 'border-red-400 focus:border-red-500 focus:ring-red-500/15 dark:border-red-500'
           : 'border-slate-300 focus:border-indigo-500 focus:ring-indigo-500/15 dark:border-slate-700 dark:focus:border-indigo-400'

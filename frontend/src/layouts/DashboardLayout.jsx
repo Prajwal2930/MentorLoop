@@ -9,7 +9,7 @@ const DashboardLayout = () => (
     <Navbar />
     <div className="flex min-h-[calc(100vh-4.5rem)]">
       <Sidebar />
-      <motion.main initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.28, ease: 'easeOut' }} className="surface-grid min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <motion.main initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', stiffness: 260, damping: 26 }} className="surface-grid min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         <Outlet />
       </motion.main>
     </div>
