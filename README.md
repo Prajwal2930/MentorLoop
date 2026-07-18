@@ -135,6 +135,10 @@ Add an SPA rewrite rule in Render so direct visits to routes such as `/dashboard
 
 Finally, copy the deployed frontend URL into the API service's `CLIENT_URL` variable and redeploy the API. If you use a custom domain, add that full origin too. Multiple origins can be supplied as a comma-separated list.
 
+### If the site loads without CSS or shows an `/assets/...` 404
+
+This means Render published `index.html` without the matching Vite asset directory. In the static site's settings, use `frontend` as the root directory, `npm ci && npm run build` as the build command, and `dist` as the publish directory. Then run **Manual Deploy → Clear build cache & deploy**. Do not use `frontend/dist` as the publish directory when the root directory is already `frontend`.
+
 ## Useful commands
 
 ```bash
