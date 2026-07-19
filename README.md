@@ -1,102 +1,106 @@
 # MentorLoop
 
-MentorLoop is a developer-growth workspace for students and early-career engineers. It brings the practical parts of career preparation into one place: a skills profile, AI-assisted code feedback, GitHub project reviews, a learning roadmap, mock interviews, and career analytics.
+MentorLoop is the project I built to make developer career preparation feel less scattered.
 
-The idea is simple: instead of jumping between disconnected tools, a learner can see where they are, decide what to practise next, and keep evidence of progress in one product.
+As a student or early-career developer, it is easy to collect tutorials, build a few projects, practise random interview questions, and still not know what to do next. I wanted one place that could connect those pieces. MentorLoop helps a learner understand their current skills, get feedback on code and GitHub projects, follow a focused learning plan, and practise interviews with useful feedback.
 
-## What it includes
+This is not meant to replace learning by doing. The goal is to make the next step clearer.
 
-- Secure registration and login with JWT authentication
-- Personal profile, GitHub connection, skills, and onboarding flow
-- AI code analysis with structured feedback, practice tasks, and interview questions
-- GitHub repository reviews focused on portfolio and resume value
-- A personalised weekly learning roadmap with progress tracking
-- AI mock interviews with scores, feedback, and interview history
-- Career analytics built from skills, roadmaps, reviews, analyses, and interviews
-- Responsive React interface with Tailwind CSS, Framer Motion, Sonner notifications, and a production-friendly API client
+## What MentorLoop can do
 
-## Stack
+- Create an account and build a developer profile
+- Track technical skills and confidence levels
+- Analyse code and receive structured feedback, best practices, practice tasks, and interview questions
+- Review a public GitHub repository for portfolio value, strengths, gaps, and suggested improvements
+- Generate a personalised weekly learning roadmap from the user's profile and activity
+- Run AI-powered mock interviews and save the results
+- Show career analytics based on skills, roadmaps, code analyses, project reviews, and interviews
 
-| Area | Technology |
+## A quick look at the stack
+
+| Part of the project | What I used |
 | --- | --- |
-| Client | React, Vite, React Router, Tailwind CSS, Axios, Context API |
-| Server | Node.js, Express, Mongoose |
+| Frontend | React, Vite, React Router, Tailwind CSS, Axios, Context API |
+| Backend | Node.js, Express, Mongoose |
 | Database | MongoDB / MongoDB Atlas |
 | Authentication | JWT and bcrypt |
-| AI | Google Gemini via `@google/genai` |
-| Integrations | GitHub REST API |
+| AI features | Google Gemini through `@google/genai` |
+| Project data | GitHub REST API |
+| UI polish | Framer Motion, Lucide React, Sonner |
 
-## Project layout
+## Project structure
 
 ```text
 MentorLoop/
-├── backend/       # Express API, database models, AI and GitHub services
-├── frontend/      # Vite + React application
-├── render.yaml    # Optional Render Blueprint
+├── backend/       # Express API, models, controllers, services, and middleware
+├── frontend/      # React application and user interface
+├── render.yaml    # Render deployment blueprint
 └── README.md
 ```
 
-## Run locally
+## Running it on my machine
 
-Use Node.js 18 or later. MongoDB must be available locally or through Atlas.
+You will need Node.js 18+ and a MongoDB database. MongoDB Atlas works well if you do not want to run MongoDB locally.
 
-```bash
-# From the repository root
-npm install
-npm run both
-```
-
-The command starts the frontend at `http://localhost:5173` and the API at `http://localhost:5000`.
-
-Install dependencies for both applications first if they are not already installed:
+Install the dependencies once:
 
 ```bash
 npm install --prefix backend
 npm install --prefix frontend
 ```
 
+Then, from the repository root, start both applications:
+
+```bash
+npm run both
+```
+
+The frontend runs at `http://localhost:5173` and the API runs at `http://localhost:5000`.
+
 ### Backend environment
 
-Create `backend/.env` from `backend/.env.example`:
+Copy `backend/.env.example` to `backend/.env` and fill in your own values:
 
 ```env
 PORT=5000
 NODE_ENV=development
 CLIENT_URL=http://localhost:5173
+
 MONGODB_URI=your_mongodb_connection_string
+
 JWT_SECRET=use_a_long_random_secret
 JWT_EXPIRES_IN=7d
+
 GEMINI_API_KEY=your_google_gemini_key
 GEMINI_MODEL=gemini-2.5-flash
+
 GITHUB_TOKEN=optional_github_personal_access_token
 ```
 
 ### Frontend environment
 
-Create `frontend/.env` from `frontend/.env.example`:
+Copy `frontend/.env.example` to `frontend/.env`:
 
 ```env
 VITE_API_BASE_URL=http://localhost:5000/api
 ```
 
-Only values prefixed with `VITE_` are exposed to the browser. Never place the JWT secret, Gemini key, MongoDB URL, or GitHub token in the frontend environment file.
+Only `VITE_` values are available in the browser. I keep secrets such as the MongoDB URL, JWT secret, Gemini key, and GitHub token in the backend environment only.
 
-## Deploy on Render
+## Deploying on Render
 
-The repository includes `render.yaml`, but the same settings can be entered through the Render dashboard.
+The project is set up as two services: an Express API and a Vite static site. `render.yaml` is included if you prefer a Render Blueprint, but the same values can be entered in the Render dashboard.
 
-### 1. Deploy the API
+### Backend: Render Web Service
 
-Create a **Web Service** with these settings:
-
-| Setting | Value |
+| Render setting | Value |
 | --- | --- |
-| Root directory | `backend` |
-| Build command | `npm ci` |
-| Start command | `npm start` |
-| Health check path | `/api/health` |
+| Root Directory | `backend` |
+| Build Command | `npm ci` |
+| Start Command | `npm start` |
+| Health Check Path | `/api/health` |
 
-Set these environment variables in Render:
+Set these values in the backend service environment settings:
 
 ```env
 NODE_ENV=production
@@ -109,17 +113,21 @@ GITHUB_TOKEN=optional_github_token
 CLIENT_URL=https://your-frontend-name.onrender.com
 ```
 
-Render provides `PORT` automatically; do not hard-code it. Once the service is live, confirm that `https://your-api-name.onrender.com/api/health` returns a success response.
+Render assigns `PORT` automatically, so it should not be set manually. After deployment, open:
 
-### 2. Deploy the frontend
+```text
+https://your-api-name.onrender.com/api/health
+```
 
-Create a **Static Site** with these settings:
+You should see a success response.
 
-| Setting | Value |
+### Frontend: Render Static Site
+
+| Render setting | Value |
 | --- | --- |
-| Root directory | `frontend` |
-| Build command | `npm ci && npm run build` |
-| Publish directory | `dist` |
+| Root Directory | `frontend` |
+| Build Command | `npm ci && npm run build` |
+| Publish Directory | `dist` |
 
 Add this build-time environment variable:
 
@@ -127,33 +135,48 @@ Add this build-time environment variable:
 VITE_API_BASE_URL=https://your-api-name.onrender.com/api
 ```
 
-Add an SPA rewrite rule in Render so direct visits to routes such as `/dashboard` continue to work:
+Because React Router handles routes in the browser, add this Render rewrite rule:
 
-| Source | Destination | Type |
+| Source | Destination | Action |
 | --- | --- | --- |
 | `/*` | `/index.html` | Rewrite |
 
-Finally, copy the deployed frontend URL into the API service's `CLIENT_URL` variable and redeploy the API. If you use a custom domain, add that full origin too. Multiple origins can be supplied as a comma-separated list.
+Once the frontend has a URL, copy that exact origin into the backend's `CLIENT_URL` setting and redeploy the backend. This allows the deployed frontend to call the API safely.
 
-### If the site loads without CSS or shows an `/assets/...` 404
+### If Render shows a blank page or `/assets/...` 404
 
-This means Render published `index.html` without the matching Vite asset directory. In the static site's settings, use `frontend` as the root directory, `npm ci && npm run build` as the build command, and `dist` as the publish directory. Then run **Manual Deploy → Clear build cache & deploy**. Do not use `frontend/dist` as the publish directory when the root directory is already `frontend`.
+That normally means `index.html` was published without its matching Vite files. The important part is that, with `frontend` set as the root directory, the publish directory must be just `dist` not `frontend/dist`.
+
+After correcting the setting, use **Manual Deploy → Clear build cache & deploy**. The deployment log should list files under `dist/assets/`, and the browser should request the same hashed asset names that appear in that log.
+
+## How Codex and GPT-5.6 helped me build it
+
+I used Codex and GPT-5.6 as a hands-on development partner while building MentorLoop. They helped me move from an initial idea to a working full-stack project by breaking the work into smaller milestones and checking each part as it came together.
+
+In practice, they helped me with:
+
+- Planning the project structure so the React frontend and Express backend stayed organised as features grew
+- Building and reviewing API routes, models, JWT protection, validation, and MongoDB integration
+- Designing the AI service layer so Gemini-related code stayed separate from controllers and routes
+- Connecting the frontend to real backend responses and tracking down issues during onboarding, skills, roadmaps, and deployment
+- Improving the dashboard, loading states, responsive design, and accessibility without removing the existing product flow
+- Writing deployment notes and helping me understand issues such as CORS, Atlas response time, environment variables, and static-site asset paths
+
+The product decisions, feature direction, testing, configuration, and final choices are still mine. I treated AI as a fast collaborator for explaining options, generating starting points, and debugging not as something that could understand the project without my review.
 
 ## Useful commands
 
 ```bash
-# API development server
+# Start only the API
 npm run dev --prefix backend
 
-# Frontend development server
+# Start only the frontend
 npm run dev --prefix frontend
 
-# Verify a frontend production build
+# Create a production frontend build
 npm run build --prefix frontend
 ```
 
-## Notes
+## A small note on secrets
 
-- Keep `.env` files out of version control. They contain secrets and deployment-specific values.
-- GitHub review works without a token for public repositories, but a token gives better API rate limits.
-- The AI features need a valid Gemini API key before they can return analyses, reviews, roadmaps, or interview feedback.
+`.env` files are ignored by Git for a reason. Please do not commit your Atlas URI, Gemini key, JWT secret, or GitHub token. If a key is ever exposed, revoke it and create a new one.
