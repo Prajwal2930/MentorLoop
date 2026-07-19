@@ -25,8 +25,11 @@ const LoginPage = () => {
     setIsSubmitting(true);
 
     try {
-      await login(formData);
-      navigate(location.state?.from?.pathname || '/dashboard', { replace: true });
+      const authenticatedUser = await login(formData);
+      const destination = authenticatedUser.profileCompleted
+        ? location.state?.from?.pathname || '/dashboard'
+        : '/onboarding';
+      navigate(destination, { replace: true });
     } catch (loginError) {
       setError(loginError.message);
     } finally {

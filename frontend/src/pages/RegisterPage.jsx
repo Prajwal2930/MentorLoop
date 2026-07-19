@@ -42,7 +42,7 @@ const RegisterPage = () => {
     try {
       const { confirmPassword, ...registrationData } = formData;
       await register(registrationData);
-      navigate('/dashboard', { replace: true });
+      navigate('/onboarding', { replace: true });
     } catch (registrationError) {
       setError(registrationError.message);
     } finally {
@@ -78,7 +78,7 @@ const RegisterPage = () => {
               <option value="advanced">Advanced</option>
             </select>
           </div>
-          <Input id="githubUsername" name="githubUsername" label="GitHub username (optional)" value={formData.githubUsername} onChange={handleChange} autoComplete="off" />
+          <Input id="githubUsername" name="githubUsername" label="GitHub username" value={formData.githubUsername} onChange={handleChange} autoComplete="off" />
           <PrimaryButton type="submit" className="w-full" isLoading={isSubmitting}>
             {isSubmitting ? 'Creating account...' : 'Create account'}
           </PrimaryButton>
